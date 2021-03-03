@@ -1,0 +1,21 @@
+export declare function base64UrlEncode(unencoded: string): string;
+export declare function base64UrlDecode(encoded: string): string;
+export declare function blind(data: string, key: string): string;
+export declare function resolveIdentity(did: string, publicKey: string): Promise<boolean>;
+export declare const ERRORS: Readonly<{
+    DID_PUBLIC_KEY_MISMATCH: string;
+    INVALID_DID_ERROR: string;
+    INVALID_DOCUMENT: string;
+    TYPE_NOT_VALID: string;
+    NO_ISSUER: string;
+    NO_ISSUER_DID: string;
+    INVALID_ISSUER_PUBLIC_KEY: string;
+    NO_ISSUER_PUBLIC_KEY: string;
+    NO_SUBJECT: string;
+    NO_SUBJECT_DID: string;
+    NO_SUBJECT_PUBLIC_KEY: string;
+    NO_CLAIMS: string;
+    NO_CREDENTIALS: string;
+    NO_PROOF_VC: string;
+    NO_PROOF_VP: string;
+}>;
