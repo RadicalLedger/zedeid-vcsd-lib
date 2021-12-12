@@ -2,17 +2,13 @@
 
 Package for issue, present and verify selectively disclossable verifiable credentials.
 
-## Inastallation
-
-1. Clone repository
-2. run *npm run build* 
-3. npm install < local repository directory >
+Also available via: https://cdn.jsdelivr.net/npm/@zedeid-sdk/sd-vc-lib/dist/browser/zedeid-vcsd.js
 
 ## Usage
 
 ### issue
 
-import { issue } from 'sd-vc-lib';
+import { issue } from '@zedeid-sdk/sd-vc-lib';
 
 Issue selectively disclosable credentials for given claims.
 
@@ -28,7 +24,7 @@ Issue selectively disclosable credentials for given claims.
 
 ### present
 
-import { present } from 'sd-vc-lib';
+import { present } from '@zedeid-sdk/sd-vc-lib';
 
 Present given list of verifiable credentials.
 
@@ -44,7 +40,7 @@ Present given list of verifiable credentials.
 
 ### verify
 
-import { verify } from 'sd-vc-lib';
+import { verify } from '@zedeid-sdk/sd-vc-lib';
 
 verify authenticity of a verifiable presentaion.
 
@@ -60,7 +56,7 @@ verify authenticity of a verifiable presentaion.
 
 ### verifyVC
 
-import { verifyVC } from 'sd-vc-lib';
+import { verifyVC } from '@zedeid-sdk/sd-vc-lib';
 
 verify authenticity of a verifiable credential.
 

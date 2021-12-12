@@ -10,6 +10,7 @@ export declare const ERRORS: Readonly<{
     NO_ISSUER: string;
     NO_ISSUER_DID: string;
     INVALID_ISSUER_PUBLIC_KEY: string;
+    INVALID_ISSUER_PRIVATE_KEY: string;
     NO_ISSUER_PUBLIC_KEY: string;
     NO_SUBJECT: string;
     NO_SUBJECT_DID: string;
@@ -18,4 +19,10 @@ export declare const ERRORS: Readonly<{
     NO_CREDENTIALS: string;
     NO_PROOF_VC: string;
     NO_PROOF_VP: string;
+    MASKING_ERROR: string;
+    SIGNING_ERROR: string;
+    INVALID_HOLDER_PRIVATE_KEY: string;
+    INVALID_HOLDER_PUBLIC_KEY: string;
+    INVALID_VC_PROOF: string;
+    INVALID_VP_PROOF: string;
 }>;
