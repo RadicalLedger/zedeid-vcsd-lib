@@ -2,6 +2,8 @@
 
 Package for issue, present and verify selectively disclossable verifiable credentials.
 
+Also available via: https://cdn.jsdelivr.net/npm/@zedeid-sdk/sd-vc-lib/dist/browser/zedeid-vcsd.js
+
 ## Usage
 
 ### issue
