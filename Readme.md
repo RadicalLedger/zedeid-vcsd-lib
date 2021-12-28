@@ -4,68 +4,72 @@ Package for issue, present and verify selectively disclossable verifiable creden
 
 Also available via: https://cdn.jsdelivr.net/npm/@zedeid-sdk/sd-vc-lib/dist/browser/zedeid-vcsd.js
 
+## Breaking changes
+
+Credentials and presentations issued with v1.0.0 will no longer be valid with v2.0.0
+
 ## Usage
 
 ### issue
 
-import { issue } from '@zedeid-sdk/sd-vc-lib';
+import { issue } from 'sd-vc-lib';
 
 Issue selectively disclosable credentials for given claims.
 
 #### Parameters
 
-1. claims : Claims - list of key value pairs.
-2. signerPrivateKey : string - hex encoded private key(Ethereum)
-3. holderPublicKey : string - hex encoded public key(Ethereum)
+1. signerPrivateKey | issuer: string | Signer - hex-encoded private key(Ethereum) | signer object for issuer
+2. claims: Claims - list of key-value pairs.
+3. holderPublicKey: string - hex-encoded public key(Ethereum)
 
 #### Returns
 
-1. verifiableCredential: VC - signed selectively disclosable verifiable credential.
+1. VC - signed selectively disclosable verifiable credential.
 
 ### present
 
-import { present } from '@zedeid-sdk/sd-vc-lib';
+import { present } from 'sd-vc-lib';
 
 Present given list of verifiable credentials.
 
 #### Parameters
 
-1. credentials : VC[] - list of verifiable credentials.
-2. masks : Mask[] - list of masks.
-3. holderPrivateKey : string - hex encoded private key(Ethereum)
+1. holderPrivateKey | holder: string | Signer - hex encoded private key(Ethereum) | signer object for holder
+2. credentials: VC[] - list of verifiable credentials.
+3. masks: Mask[] - list of masks.
 
 #### Returns
 
-1. verifiablePresentation: VP - presentation of set of selectively disclosed verifiable credentials.
+1. VP - presentation of a set of selectively disclosed verifiable credentials.
 
 ### verify
 
-import { verify } from '@zedeid-sdk/sd-vc-lib';
+import { verify } from 'sd-vc-lib';
 
-verify authenticity of a verifiable presentaion.
+verify the authenticity of a verifiable presentation.
 
 #### Parameters
 
-1. vp : VP - valid mnemonic phrase.
-2. signerPublicKeys : string[] - set of hex encoded public keys(Ethereum)
-3. holderPublicKey : string - hex encoded public key(Ethereum)
+1. vp: VP - valid mnemonic phrase.
+2. signerPublicKeys: string[] - set of hex-encoded public keys(Ethereum)
+3. holderPublicKey: string - hex-encoded public key(Ethereum)
 
 #### Returns
 
-1. verified: Promise< boolean > - resolve to true if valid.
+1. boolean - true if valid.
 
 ### verifyVC
 
-import { verifyVC } from '@zedeid-sdk/sd-vc-lib';
+import { verifyVC } from 'sd-vc-lib';
 
-verify authenticity of a verifiable credential.
+verify the authenticity of a verifiable credential.
 
 #### Parameters
 
-1. vc : VC - verifiable credential.
-2. signerPublicKey : string - hex encoded public key(Ethereum).
-3. holderPublicKey : string - hex encoded public key(Ethereum).
+1. vc: VC - verifiable credential.
+2. signerPublicKey: string - hex-encoded public key(Ethereum).
+3. holderPublicKey: string - hex-encoded public key(Ethereum).
 
 #### Returns
 
-1. verified: Promise< boolean > - resolve to true if verifiable credential is valid.
+1. boolean - true if a verifiable credential is valid.
