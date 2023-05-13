@@ -1,24 +1,10 @@
 # sd-vc-lib
 
-Package to issue, present and verify selectively disclosable verifiable credentials.
+Package to issue, present and verify selectively disclosure verifiable credentials.
 
 ## Breaking changes
 
 Credentials and presentations issued with v2.0.0 will no longer be valid with v3.0.0
-
-## Installation
-
--   Node.js 16.0+ is required.
-
-To install locally (for development):
-
-```bash
-git clone https://github.com/RadicalLedger/zedeid-vcsd-lib-core.git
-cd zedeid-vcsd-lib-core
-
-yarn install or npm install
-yarn dev or npm run dev
-```
 
 ## Usage
 
