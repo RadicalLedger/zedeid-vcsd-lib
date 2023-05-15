@@ -16,7 +16,7 @@ export interface Credential {
 export interface CreateProps {
     issuanceDate?: string;
     issuerPrivateKey: string;
-    holderPublicKey: string;
+    holderPublicKey?: string;
     documentLoader: DocumentLoader;
     credential: Credential;
     suite?: Suite;
@@ -24,7 +24,7 @@ export interface CreateProps {
 
 export interface VerifyProps {
     issuerPublicKey?: string;
-    holderPublicKey: string;
+    holderPublicKey?: string;
     documentLoader: DocumentLoader;
     vc: VerifiableCredential;
     suite?: Suite;

@@ -7,6 +7,7 @@ declare const ERRORS: Readonly<{
     NO_ISSUER_DID: string;
     INVALID_ISSUER_PUBLIC_KEY: string;
     INVALID_ISSUER_PRIVATE_KEY: string;
+    NO_HOLDER_PUBLIC_KEY: string;
     NO_ISSUER_PUBLIC_KEY: string;
     NO_SUBJECT: string;
     NO_SUBJECT_DID: string;

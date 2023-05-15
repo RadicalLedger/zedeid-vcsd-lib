@@ -120,14 +120,14 @@ const verify = ({ suite = new ed25519_signature_2018_1.Ed25519Signature2018(), c
     /* verify each verifiable credential */
     for (const vc of verifiableCredential) {
         try {
-            const result = credential_1.default.verify({
+            const result = yield credential_1.default.verify({
                 vc,
                 documentLoader,
                 holderPublicKey,
                 issuerPublicKey,
                 suite
             });
-            if (!result)
+            if (!(result === null || result === void 0 ? void 0 : result.verified))
                 throw Error(errors_1.default.INVALID_VC_PROOF);
         }
         catch (e) {

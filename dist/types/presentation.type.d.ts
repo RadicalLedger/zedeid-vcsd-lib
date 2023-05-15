@@ -25,7 +25,7 @@ export interface CreateProps {
 }
 
 export interface VerifyProps {
-    issuerPublicKey: string;
+    issuerPublicKey?: string;
     holderPublicKey?: string;
     documentLoader: DocumentLoader;
     vp: VerifiablePresentation;

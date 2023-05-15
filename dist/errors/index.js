@@ -9,6 +9,7 @@ const ERRORS = Object.freeze({
     NO_ISSUER_DID: 'Issuer did is missing',
     INVALID_ISSUER_PUBLIC_KEY: 'Issuer public key is not valid',
     INVALID_ISSUER_PRIVATE_KEY: 'Issuer private key is not valid',
+    NO_HOLDER_PUBLIC_KEY: 'Holder public key is missing',
     NO_ISSUER_PUBLIC_KEY: 'Issuer public key is missing',
     NO_SUBJECT: 'Subject information is missing',
     NO_SUBJECT_DID: 'Subject did is missing',
