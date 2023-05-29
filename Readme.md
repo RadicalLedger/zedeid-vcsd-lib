@@ -35,7 +35,7 @@ import { verifiable } from 'sd-vc-lib';
 verifiable.credential.verify({
     vc, // singed credential need to be verified.
     documentLoader, // load the document for the given DID.
-    holderPublicKey, // holders's Ethereum public key in hex.
+    holderPublicKey, // (optional) holders's Ethereum public key in hex.
     issuerPublicKey, // (optional) issuer's Ethereum public key in hex.
     suite // (optional) crypto suit used to create the verifiable credential.
 });
@@ -70,7 +70,7 @@ import { verifiable } from 'sd-vc-lib';
 verifiable.presentation.verify({
     vp, // singed credential need to be verified.
     documentLoader, // load the document for the given DID.
-    issuerPublicKey, // issuer's Ethereum public key in hex.
+    issuerPublicKey, // (optional) issuer's Ethereum public key in hex.
     holderPublicKey, // (optional) holders's Ethereum public key in hex.
     suite, // (optional) crypto suit used to create the verifiable credential.
     challenge, // (optional) random string ( eg: fcc8b78e-ecca-426a-a69f-8e7c927b845f )
