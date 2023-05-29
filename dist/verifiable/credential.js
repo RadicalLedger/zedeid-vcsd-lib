@@ -37,12 +37,13 @@ const create = ({ issuerPrivateKey, issuanceDate = new Date().toISOString(), hol
         if (!holderPublicKey) {
             /* extract data from verifiable presentation */
             const { credentialSubject } = credential;
+            let holder = functions_1.default.getKeyValue(credentialSubject, 'holder');
             /* vc proof checking */
             /* get holder public key using document loader */
-            if (!(credentialSubject === null || credentialSubject === void 0 ? void 0 : credentialSubject.holder))
+            if (!holder)
                 throw new Error(errors_1.default.NO_HOLDER_PUBLIC_KEY);
             /* load the document of the holder with holder DID */
-            const documentLoaderResult = yield documentLoader(credentialSubject === null || credentialSubject === void 0 ? void 0 : credentialSubject.holder);
+            const documentLoaderResult = yield documentLoader(holder);
             const verificationMethod = (_b = (_a = documentLoaderResult === null || documentLoaderResult === void 0 ? void 0 : documentLoaderResult.document) === null || _a === void 0 ? void 0 : _a.verificationMethod) === null || _b === void 0 ? void 0 : _b[0];
             /* base58 to hex */
             holderPublicKey = buffer_1.Buffer.from(base_58_1.default.decode(verificationMethod === null || verificationMethod === void 0 ? void 0 : verificationMethod.publicKeyBase58)).toString('hex');
@@ -108,25 +109,26 @@ const create = ({ issuerPrivateKey, issuanceDate = new Date().toISOString(), hol
  * @return {boolean} - result in boolean format.
  */
 const verify = ({ suite = new ed25519_signature_2018_1.Ed25519Signature2018(), vc, documentLoader, issuerPublicKey, holderPublicKey }) => __awaiter(void 0, void 0, void 0, function* () {
-    var _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q;
+    var _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
     /* check essential data is present in vc */
     functions_1.default.checkVcMetaData(vc);
-    /* extract data from verifiable credential */
-    const { issuer } = vc;
     /* do a mask proof if available */
     if ((_e = (_d = vc === null || vc === void 0 ? void 0 : vc.credentialSubject) === null || _d === void 0 ? void 0 : _d.selectiveDisclosureMetaData) === null || _e === void 0 ? void 0 : _e.proof) {
+        /* extract data from verifiable credential */
+        let issuer = functions_1.default.getKeyValue(vc, 'issuer');
+        let holder = functions_1.default.getKeyValue(vc.credentialSubject, 'holder');
         /* get issuer public key using document loader */
-        if (!issuerPublicKey) {
+        if (!issuerPublicKey && issuer) {
             /* load the document of the issuer with issuer DID */
             const documentLoaderResult = yield documentLoader(issuer);
             const verificationMethod = (_g = (_f = documentLoaderResult === null || documentLoaderResult === void 0 ? void 0 : documentLoaderResult.document) === null || _f === void 0 ? void 0 : _f.verificationMethod) === null || _g === void 0 ? void 0 : _g[0];
             /* base58 to hex */
             issuerPublicKey = buffer_1.Buffer.from(base_58_1.default.decode(verificationMethod === null || verificationMethod === void 0 ? void 0 : verificationMethod.publicKeyBase58)).toString('hex');
         }
-        if (!holderPublicKey && ((_h = vc === null || vc === void 0 ? void 0 : vc.credentialSubject) === null || _h === void 0 ? void 0 : _h.holder)) {
+        if (!holderPublicKey && holder) {
             /* load the document of the issuer with issuer DID */
-            const documentLoaderResult = yield documentLoader((_j = vc === null || vc === void 0 ? void 0 : vc.credentialSubject) === null || _j === void 0 ? void 0 : _j.holder);
-            const verificationMethod = (_l = (_k = documentLoaderResult === null || documentLoaderResult === void 0 ? void 0 : documentLoaderResult.document) === null || _k === void 0 ? void 0 : _k.verificationMethod) === null || _l === void 0 ? void 0 : _l[0];
+            const documentLoaderResult = yield documentLoader(holder);
+            const verificationMethod = (_j = (_h = documentLoaderResult === null || documentLoaderResult === void 0 ? void 0 : documentLoaderResult.document) === null || _h === void 0 ? void 0 : _h.verificationMethod) === null || _j === void 0 ? void 0 : _j[0];
             /* base58 to hex */
             holderPublicKey = buffer_1.Buffer.from(base_58_1.default.decode(verificationMethod === null || verificationMethod === void 0 ? void 0 : verificationMethod.publicKeyBase58)).toString('hex');
         }
@@ -137,7 +139,7 @@ const verify = ({ suite = new ed25519_signature_2018_1.Ed25519Signature2018(), v
         /* remove selectiveDisclosureMetaData */
         let credentialSubject = Object.assign({}, vc.credentialSubject);
         delete credentialSubject.selectiveDisclosureMetaData;
-        const mask = ((_o = (_m = vc === null || vc === void 0 ? void 0 : vc.credentialSubject) === null || _m === void 0 ? void 0 : _m.selectiveDisclosureMetaData) === null || _o === void 0 ? void 0 : _o.mask) || {};
+        const mask = ((_l = (_k = vc === null || vc === void 0 ? void 0 : vc.credentialSubject) === null || _k === void 0 ? void 0 : _k.selectiveDisclosureMetaData) === null || _l === void 0 ? void 0 : _l.mask) || {};
         /* create a masked credential subject */
         const { maskedClaims: fullMaskedClaims } = utils_1.default.mask.full({
             mask,
@@ -153,7 +155,7 @@ const verify = ({ suite = new ed25519_signature_2018_1.Ed25519Signature2018(), v
         try {
             const verified = utils_1.default.signature.verify({
                 data: maskCredential,
-                signature: (_q = (_p = vc === null || vc === void 0 ? void 0 : vc.credentialSubject) === null || _p === void 0 ? void 0 : _p.selectiveDisclosureMetaData) === null || _q === void 0 ? void 0 : _q.proof,
+                signature: (_o = (_m = vc === null || vc === void 0 ? void 0 : vc.credentialSubject) === null || _m === void 0 ? void 0 : _m.selectiveDisclosureMetaData) === null || _o === void 0 ? void 0 : _o.proof,
                 publicKey: issuerPublicKey
             });
             return { verified };

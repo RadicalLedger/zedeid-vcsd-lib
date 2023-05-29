@@ -22,5 +22,6 @@ declare const _default: {
     checkVcMetaData: (vc: VerifiableCredential) => void;
     checkVpMetaData: (vp: VerifiablePresentation) => void;
     getVerificationKey: typeof getVerificationKey;
+    getKeyValue: (obj: any, key: string) => any;
 };
 export default _default;

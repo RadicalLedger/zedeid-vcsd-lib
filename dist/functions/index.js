@@ -36,6 +36,7 @@ const errors_1 = __importDefault(require("../errors"));
 const ed25519_signature_2018_1 = require("@transmute/ed25519-signature-2018");
 const base_58_1 = __importDefault(require("base-58"));
 const buffer_1 = require("buffer");
+const lodash_1 = __importDefault(require("lodash"));
 function base64UrlEncode(unencoded) {
     return buffer_1.Buffer.from(unencoded)
         .toString('base64')
@@ -146,6 +147,20 @@ const checkVpMetaData = (vp) => {
         throw new Error(errors_1.default.NO_CREDENTIALS);
     }
 };
+const getKeyValue = (obj, key) => {
+    if (!obj)
+        return null;
+    for (const k in obj) {
+        if (k === key)
+            return obj[k];
+        if (lodash_1.default.isObject(obj[k]) && !lodash_1.default.isArray(obj[k])) {
+            let v = getKeyValue(obj[k], key);
+            if (v)
+                return v;
+        }
+    }
+    return null;
+};
 exports.default = {
     base64UrlEncode,
     base64UrlDecode,
@@ -154,5 +169,6 @@ exports.default = {
     privateKeyToDoc,
     checkVcMetaData,
     checkVpMetaData,
-    getVerificationKey
+    getVerificationKey,
+    getKeyValue
 };

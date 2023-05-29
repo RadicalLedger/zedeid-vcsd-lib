@@ -18,8 +18,6 @@ const errors_1 = __importDefault(require("../errors"));
 const utils_1 = __importDefault(require("../utils"));
 const functions_1 = __importDefault(require("../functions"));
 const credential_1 = __importDefault(require("./credential"));
-const base_58_1 = __importDefault(require("base-58"));
-const buffer_1 = require("buffer");
 /**
  * Generates a signed presentation for given verifiable credentials using a private key.
  *
@@ -103,20 +101,10 @@ const create = ({ suite, challenge = 'fcc8b78e-ecca-426a-a69f-8e7c927b845f', iss
  * @return {boolean} - result in boolean format.
  */
 const verify = ({ suite = new ed25519_signature_2018_1.Ed25519Signature2018(), challenge = 'fcc8b78e-ecca-426a-a69f-8e7c927b845f', domain, vp, documentLoader, issuerPublicKey, holderPublicKey }) => __awaiter(void 0, void 0, void 0, function* () {
-    var _b, _c;
     /* check essential data is present in vp */
     functions_1.default.checkVpMetaData(vp);
     /* extract data from verifiable presentation */
-    const { verifiableCredential, holder } = vp;
-    /* vc proof checking */
-    /* get holder public key using document loader */
-    if (!holderPublicKey) {
-        /* load the document of the holder with holder DID */
-        const documentLoaderResult = yield documentLoader(holder);
-        const verificationMethod = (_c = (_b = documentLoaderResult === null || documentLoaderResult === void 0 ? void 0 : documentLoaderResult.document) === null || _b === void 0 ? void 0 : _b.verificationMethod) === null || _c === void 0 ? void 0 : _c[0];
-        /* base58 to hex */
-        holderPublicKey = buffer_1.Buffer.from(base_58_1.default.decode(verificationMethod === null || verificationMethod === void 0 ? void 0 : verificationMethod.publicKeyBase58)).toString('hex');
-    }
+    const { verifiableCredential } = vp;
     /* verify each verifiable credential */
     for (const vc of verifiableCredential) {
         try {

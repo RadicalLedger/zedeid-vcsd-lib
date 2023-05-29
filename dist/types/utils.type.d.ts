@@ -27,12 +27,12 @@ export interface MaskProps {
 }
 
 export interface VerifySignatureProps {
-    data: MaskCredential | MaskPresentation;
+    data: any;
     signature: string;
     publicKey: string;
 }
 
 export interface GenerateSignatureProps {
-    data: Claims;
+    data: any;
     privateKey: string;
 }
