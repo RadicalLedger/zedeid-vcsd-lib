@@ -21,7 +21,7 @@ const credential_1 = __importDefault(require("./credential"));
 /**
  * Generates a signed presentation for given verifiable credentials using a private key.
  *
- * @param {string} holderPrivateKey - issuer's Ethereum private key in hex.
+ * @param {string} holderPrivateKey - issuer's private key in hex.
  * @param {DocumentLoader} documentLoader - load the document for the given DID.
  * @param {VerifiableCredential[]} verifiableCredential - array of verifiable credentials
  * @param {Mask[]} mask - array of mask credentials for each verifiable credential in key pair format or an empty object.
@@ -93,8 +93,8 @@ const create = ({ suite, challenge = 'fcc8b78e-ecca-426a-a69f-8e7c927b845f', iss
  * @param {Suite} suite - crypto suit used to create the verifiable credential.
  * @param {string} challenge - random string ( eg: fcc8b78e-ecca-426a-a69f-8e7c927b845f ).
  * @param {string} domain - domain value ( eg: www.example.com ).
- * @param {string} issuerPublicKey - issuer's Ethereum public key in hex.
- * @param {string} holderPublicKey - holders's Ethereum public key in hex.
+ * @param {string} issuerPublicKey - issuer's public key in hex.
+ * @param {string} holderPublicKey - holders's public key in hex.
  * @param {DocumentLoader} documentLoader - to load the document for the given DID.
  * @param {VerifiablePresentation} vp - singed credential need to be verified.
  *

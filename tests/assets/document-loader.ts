@@ -1,13 +1,13 @@
 import axios from 'axios';
 
-const end_point = '<did document end point>';
+const zedeid_api = 'https://www.offchaindids.zedeid.com/v2/';
 
 const documentLoader = async (iri: string): Promise<any> => {
     let doc: any;
     let url = iri.split('#')[0];
 
     if (url.startsWith('did:')) {
-        url = `${end_point}did/${url}`;
+        url = `${zedeid_api}did/${url}`;
 
         doc = await fetchDoc(url);
         doc = doc?.didDocument;
@@ -28,11 +28,9 @@ const fetchDoc = (url: string) => {
         var result: any;
 
         try {
-            result = await axios.get(url, {
-                headers: { Accept: 'application/json', 'Accept-Encoding': 'identity' }
-            });
-        } catch (error) {
             result = await axios.get(url);
+        } catch (error) {
+            console.log(error);
         }
 
         if (result?.status !== 200) return resolve(null);
@@ -40,5 +38,6 @@ const fetchDoc = (url: string) => {
         return resolve(result?.data);
     });
 };
+
 
 export default documentLoader;

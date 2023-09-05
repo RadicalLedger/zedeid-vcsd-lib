@@ -7,7 +7,8 @@
     "scripts": {
         "prebuild": "tsc",
         "build:obf": "npm run obf",
-        "build": "npm run prebuild && npx copyfiles --flat src/types/* out/types",
+        "build": "tsc && npx copyfiles --flat src/types/* out/types",
+        "build:ts": "tsc -p tsconfig-ts.json && npx copyfiles --flat src/types/* out/types",
         "obf": "node obfuscate.js",
         "test": "jest",
         "coverage": "jest --coverage",

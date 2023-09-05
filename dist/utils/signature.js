@@ -29,7 +29,7 @@ const generateSignature = ({ data, privateKey }) => {
  *
  * @param {MaskCredential | MaskPresentation} data - keys and values should be mask or a empty object.
  * @param {string} signature - signature proof as a hex string.
- * @param {string} publicKey - issuer's / holder's Ethereum public key in hex.
+ * @param {string} publicKey - issuer's / holder's public key in hex.
  *
  * @return {boolean}  validated result in boolean format.
  */

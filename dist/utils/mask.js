@@ -10,7 +10,7 @@ const functions_1 = __importDefault(require("../functions"));
  *
  * @param {Mask} mask - keys and values should be mask or a empty object.
  * @param {Claims} credentialSubject - partially masked credentialSubject.
- * @param {string} holderPublicKey - holder's Ethereum public key in hex.
+ * @param {string} holderPublicKey - holder's public key in hex.
  *
  * @return {Claims}  selective masked credentialSubject.
  */
@@ -60,7 +60,7 @@ const createMask = ({ mask = {}, credentialSubject = {}, holderPublicKey }) => {
         for (const key in credentialSubject) {
             const maskValues = mask === null || mask === void 0 ? void 0 : mask[key];
             if (maskValues) {
-                const maskedKey = functions_1.default.blind(key, holderPublicKey);
+                const maskedKey = key;
                 if (credentialSubject === null || credentialSubject === void 0 ? void 0 : credentialSubject[key]) {
                     try {
                         if (lodash_1.default.isObject(mask === null || mask === void 0 ? void 0 : mask[key]) && lodash_1.default.isObject(credentialSubject[key])) {
@@ -69,8 +69,7 @@ const createMask = ({ mask = {}, credentialSubject = {}, holderPublicKey }) => {
                                 credentialSubject: credentialSubject[key],
                                 holderPublicKey
                             });
-                            maskedClaims[(mask === null || mask === void 0 ? void 0 : mask[key]) === true ? maskedKey : key] =
-                                result === null || result === void 0 ? void 0 : result.maskedClaims;
+                            maskedClaims[maskedKey] = result === null || result === void 0 ? void 0 : result.maskedClaims;
                             if (lodash_1.default.size(result === null || result === void 0 ? void 0 : result.maskedMasks))
                                 maskedMasks[maskedKey] = result === null || result === void 0 ? void 0 : result.maskedMasks;
                             continue;
@@ -98,7 +97,7 @@ const createMask = ({ mask = {}, credentialSubject = {}, holderPublicKey }) => {
  *
  * @param {Mask} mask - keys and values should be mask or a empty object.
  * @param {Claims} credentialSubject - partially masked credentialSubject.
- * @param {string} holderPublicKey - holder's Ethereum public key in hex.
+ * @param {string} holderPublicKey - holder's public key in hex.
  *
  * @return {Claims}  selective masked credentialSubject.
  */
@@ -112,7 +111,7 @@ const fullMask = ({ mask = {}, credentialSubject = {}, holderPublicKey }) => {
             if (maskValues) {
                 if (credentialSubject === null || credentialSubject === void 0 ? void 0 : credentialSubject[key]) {
                     try {
-                        const maskedKey = functions_1.default.blind(credentialSubject[key], holderPublicKey);
+                        const maskedKey = key;
                         if (lodash_1.default.isObject(mask === null || mask === void 0 ? void 0 : mask[key]) && lodash_1.default.isObject(credentialSubject[key])) {
                             const result = fullMask({
                                 mask: mask === null || mask === void 0 ? void 0 : mask[key],
@@ -149,7 +148,7 @@ const fullMask = ({ mask = {}, credentialSubject = {}, holderPublicKey }) => {
             const maskValues = !(mask === null || mask === void 0 ? void 0 : mask[key]) || lodash_1.default.isObject(mask === null || mask === void 0 ? void 0 : mask[key]);
             if (maskValues) {
                 if (credentialSubject === null || credentialSubject === void 0 ? void 0 : credentialSubject[key]) {
-                    const maskedKey = functions_1.default.blind(key, holderPublicKey);
+                    const maskedKey = key;
                     try {
                         if (lodash_1.default.isObject(mask === null || mask === void 0 ? void 0 : mask[key]) && lodash_1.default.isObject(credentialSubject[key])) {
                             const result = fullMask({

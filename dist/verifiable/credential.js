@@ -22,9 +22,9 @@ const buffer_1 = require("buffer");
 /**
  * Generates a signed credential for given credential using a private key.
  *
- * @param {string} issuerPrivateKey - issuer's Ethereum private key in hex.
+ * @param {string} issuerPrivateKey - issuer's private key in hex.
  * @param {string} issuanceDate - issuance date in ISO format YYYY-MM-DDTHH:mm:ss
- * @param {string} holderPublicKey - holders's Ethereum public key in hex.
+ * @param {string} holderPublicKey - holders's public key in hex.
  * @param {DocumentLoader} documentLoader - load the document for the given DID.
  * @param {Suite} suite - crypto suit used to create the verifiable credential.
  * @param {Credential} credential - credential need to be singed as key value pairs
@@ -101,8 +101,8 @@ const create = ({ issuerPrivateKey, issuanceDate = new Date().toISOString(), hol
  * Verify a signed verifiable credential
  *
  * @param {VerifiableCredential} vc - singed credential need to be verified.
- * @param {string} issuerPublicKey - issuer's Ethereum public key in hex.
- * @param {string} holderPublicKey - holders's Ethereum public key in hex.
+ * @param {string} issuerPublicKey - issuer's public key in hex.
+ * @param {string} holderPublicKey - holders's public key in hex.
  * @param {DocumentLoader} documentLoader - to load the document for the given DID.
  * @param {Suite} suite - crypto suit used to create the verifiable credential.
  *
