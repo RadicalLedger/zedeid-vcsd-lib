@@ -37,4 +37,4 @@ export interface GenerateSignatureProps {
     privateKey: string;
 }
 
-export type DIDMethods = 'key' | 'ethr';
+export type DIDMethods = 'key' | 'ethr' | 'moon';

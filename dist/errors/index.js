@@ -1,5 +1,5 @@
-'use strict';
-Object.defineProperty(exports, '__esModule', { value: true });
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const ERRORS = Object.freeze({
     DID_PUBLIC_KEY_MISMATCH: 'Did does not match given public key',
     INVALID_DID_ERROR: 'Invalid did',
@@ -27,7 +27,10 @@ const ERRORS = Object.freeze({
     INVALID_VP_PROOF: 'VP proof is invalid',
     INVALID_SIGNATURE: 'Proof is invalid',
     UNKNOWN_ERROR: 'Unknown error',
-    FAILED_MASK_VERIFICATION: 'Failed to verify masked verifiable credential'
+    FAILED_MASK_VERIFICATION: 'Failed to verify masked verifiable credential',
+    NO_ID: 'Proof ID is missing',
+    NO_HOLDER_DID: 'Holder did is missing',
+    NO_VERIFICATION_METHOD: 'Verification method is missing in the DID Document'
 });
 exports.default = ERRORS;
 //# sourceMappingURL=index.js.map

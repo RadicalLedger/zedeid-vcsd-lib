@@ -1,18 +1,17 @@
-'use strict';
-var __importDefault =
-    (this && this.__importDefault) ||
-    function (mod) {
-        return mod && mod.__esModule ? mod : { default: mod };
-    };
-Object.defineProperty(exports, '__esModule', { value: true });
-const vc_js_1 = require('@transmute/vc.js');
-const base_58_1 = __importDefault(require('base-58'));
-const utils_1 = __importDefault(require('../utils'));
-const functions_1 = __importDefault(require('../functions'));
-const errors_1 = __importDefault(require('../errors'));
-const ed25519_signature_2018_1 = require('@transmute/ed25519-signature-2018');
-const ecdsa_secp256k1_signature_2019_1 = require('@bloomprotocol/ecdsa-secp256k1-signature-2019');
-const buffer_1 = require('buffer');
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const vc_js_1 = require("@transmute/vc.js");
+const base_58_1 = __importDefault(require("base-58"));
+const utils_1 = __importDefault(require("../utils"));
+const functions_1 = __importDefault(require("../functions"));
+const errors_1 = __importDefault(require("../errors"));
+const ed25519_signature_2018_1 = require("@transmute/ed25519-signature-2018");
+const ecdsa_secp256k1_signature_2019_1 = require("@bloomprotocol/ecdsa-secp256k1-signature-2019");
+const edca_secp256k1_verification_2019_1 = require("edca-secp256k1-verification-2019");
+const buffer_1 = require("buffer");
 /**
  * Generates a signed credential for given credential using a private key.
  *
@@ -25,60 +24,79 @@ const buffer_1 = require('buffer');
  *
  * @return {VerifiableCredential} - signed verifiable credential of the given credential.
  */
-const create = async ({
-    issuerPrivateKey,
-    issuanceDate = new Date().toISOString(),
-    holderPublicKey,
-    documentLoader,
-    credential,
-    suite = undefined,
-    type = 'key'
-}) => {
-    var _a, _b, _c, _d;
+const create = async ({ issuerPrivateKey, issuanceDate = new Date().toISOString(), documentLoader, credential, suite = undefined, didMethod }) => {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u;
     try {
-        if (!holderPublicKey) {
-            /* extract data from verifiable credential */
-            const { credentialSubject } = credential;
-            let holder = functions_1.default.getKeyValue(credentialSubject, 'holder');
-            /* vc proof checking */
-            /* get holder public key using document loader */
-            if (!holder) throw new Error(errors_1.default.NO_HOLDER_PUBLIC_KEY);
-            /* load the document of the holder with holder DID */
-            const documentLoaderResult = await documentLoader(holder);
-            if (
-                (_a =
-                    documentLoaderResult === null || documentLoaderResult === void 0
-                        ? void 0
-                        : documentLoaderResult.document) === null || _a === void 0
-                    ? void 0
-                    : _a.verificationMethod
-            ) {
-                const verificationMethod =
-                    (_c =
-                        (_b =
-                            documentLoaderResult === null || documentLoaderResult === void 0
-                                ? void 0
-                                : documentLoaderResult.document) === null || _b === void 0
-                            ? void 0
-                            : _b.verificationMethod) === null || _c === void 0
-                        ? void 0
-                        : _c[0];
-                /* base58 to hex */
-                holderPublicKey = buffer_1.Buffer.from(
-                    base_58_1.default.decode(
-                        verificationMethod === null || verificationMethod === void 0
-                            ? void 0
-                            : verificationMethod.publicKeyBase58
-                    )
-                ).toString('hex');
-            } else if (
-                holder === null || holder === void 0 ? void 0 : holder.startsWith('did:ethr')
-            ) {
-                holderPublicKey =
-                    holder === null || holder === void 0
-                        ? void 0
-                        : holder.replace('did:ethr:0x', '');
+        /* extract the did type */
+        if (!didMethod) {
+            didMethod = ((_b = (_a = functions_1.default.getKeyValue(credential, 'issuer')) === null || _a === void 0 ? void 0 : _a.split(':')) === null || _b === void 0 ? void 0 : _b[1]) || 'key';
+        }
+        /* extract data from verifiable credential */
+        const { credentialSubject } = credential;
+        let holder = functions_1.default.getKeyValue(credentialSubject, 'holder');
+        /* vc proof checking */
+        if (!holder)
+            throw new Error(errors_1.default.NO_HOLDER_PUBLIC_KEY);
+        /* load the document of the holder with holder DID */
+        const documentLoaderResult = await documentLoader(holder);
+        let holderPublicKey;
+        /* get holder public key using document loader */
+        if ((_c = documentLoaderResult === null || documentLoaderResult === void 0 ? void 0 : documentLoaderResult.document) === null || _c === void 0 ? void 0 : _c.verificationMethod) {
+            const verificationMethod = (_d = documentLoaderResult === null || documentLoaderResult === void 0 ? void 0 : documentLoaderResult.document) === null || _d === void 0 ? void 0 : _d.verificationMethod.filter((vm) => vm.type === 'EcdsaSecp256k1VerificationKey2019' ||
+                vm.type === 'Ed25519VerificationKey2018');
+            switch ((_e = verificationMethod[0]) === null || _e === void 0 ? void 0 : _e.type) {
+                case 'Ed25519VerificationKey2018':
+                    holderPublicKey = buffer_1.Buffer.from(base_58_1.default.decode((_f = verificationMethod[0]) === null || _f === void 0 ? void 0 : _f.publicKeyBase58)).toString('hex');
+                    break;
+                case 'EcdsaSecp256k1VerificationKey2019':
+                    holderPublicKey = (_g = verificationMethod[0]) === null || _g === void 0 ? void 0 : _g.publicKeyHex;
+                    break;
             }
+            if (!holderPublicKey)
+                throw new Error(errors_1.default.NO_HOLDER_PUBLIC_KEY);
+        }
+        else if (holder === null || holder === void 0 ? void 0 : holder.startsWith('did:ethr')) {
+            holderPublicKey = holder === null || holder === void 0 ? void 0 : holder.replace('did:ethr:0x', '');
+        }
+        /* get issuer verification key using document loader */
+        const issuerDocument = await documentLoader(credential === null || credential === void 0 ? void 0 : credential.issuer);
+        let verificationKey;
+        let verificationMethod;
+        if ((_h = issuerDocument === null || issuerDocument === void 0 ? void 0 : issuerDocument.document) === null || _h === void 0 ? void 0 : _h.verificationMethod) {
+            verificationMethod = (_j = issuerDocument === null || issuerDocument === void 0 ? void 0 : issuerDocument.document) === null || _j === void 0 ? void 0 : _j.verificationMethod.filter((vm) => vm.type === 'EcdsaSecp256k1VerificationKey2019' ||
+                vm.type === 'Ed25519VerificationKey2018');
+            switch ((_k = verificationMethod[0]) === null || _k === void 0 ? void 0 : _k.type) {
+                case 'Ed25519VerificationKey2018':
+                    verificationKey = await ed25519_signature_2018_1.Ed25519VerificationKey2018.from({
+                        controller: (_l = verificationMethod[0]) === null || _l === void 0 ? void 0 : _l.controller,
+                        id: (_m = verificationMethod[0]) === null || _m === void 0 ? void 0 : _m.id,
+                        type: (_o = verificationMethod[0]) === null || _o === void 0 ? void 0 : _o.type,
+                        publicKeyBase58: (_p = verificationMethod[0]) === null || _p === void 0 ? void 0 : _p.publicKeyBase58,
+                        privateKeyBase58: base_58_1.default.encode(buffer_1.Buffer.from(issuerPrivateKey, 'hex'))
+                    });
+                    break;
+                case 'EcdsaSecp256k1VerificationKey2019':
+                    verificationKey = edca_secp256k1_verification_2019_1.EcdsaSecp256k1VerificationKey2019.from({
+                        controller: (_q = verificationMethod[0]) === null || _q === void 0 ? void 0 : _q.controller,
+                        id: (_r = verificationMethod[0]) === null || _r === void 0 ? void 0 : _r.id,
+                        publicKeyHex: (_s = verificationMethod[0]) === null || _s === void 0 ? void 0 : _s.publicKeyHex,
+                        privateKeyHex: issuerPrivateKey
+                    });
+                    break;
+            }
+            if (!verificationKey)
+                throw new Error(errors_1.default.NO_VERIFICATION_METHOD);
+        }
+        else if (didMethod == 'ethr') {
+            verificationKey = await edca_secp256k1_verification_2019_1.EcdsaSecp256k1VerificationKey2019.from({
+                controller: credential === null || credential === void 0 ? void 0 : credential.issuer,
+                id: credential === null || credential === void 0 ? void 0 : credential.issuer,
+                privateKeyHex: issuerPrivateKey,
+                publicKeyHex: credential === null || credential === void 0 ? void 0 : credential.issuer.split('did:ethr:0x')[1]
+            });
+        }
+        else {
+            throw new Error(errors_1.default.NO_ISSUER_DID);
         }
         /* create a fully masked credential subject */
         const { maskedClaims: fullMaskedClaims } = utils_1.default.mask.full({
@@ -86,16 +104,14 @@ const create = async ({
             credentialSubject: credential.credentialSubject,
             holderPublicKey
         });
-        /* extract data from private key */
-        const issuerDoc = await functions_1.default.privateKeyToDoc(issuerPrivateKey, type);
         /* create the proof with the masked credential subject and issuer private key */
         const maskCredential = {
             type: ['VerifiableCredential'],
-            issuer: issuerDoc === null || issuerDoc === void 0 ? void 0 : issuerDoc.DID,
+            issuer: credential.issuer,
             credentialSubject: fullMaskedClaims
         };
         /* generate proof with masked credential subject */
-        const maskedProof = utils_1.default.signature[type].generate({
+        const maskedProof = utils_1.default.signature[didMethod].generate({
             data: maskCredential,
             privateKey: issuerPrivateKey
         });
@@ -106,24 +122,24 @@ const create = async ({
         };
         /* if a suite is not given use the default */
         if (!suite) {
-            if (type === 'key') {
-                const keyPairIssuer = await functions_1.default.getKeyVerificationKey({
-                    seed: issuerPrivateKey,
-                    returnKey: true
-                });
-                suite = new ed25519_signature_2018_1.Ed25519Signature2018({
-                    key: keyPairIssuer,
-                    date: issuanceDate
-                });
-            } else if (type === 'ethr') {
-                const keyPairIssuer = await functions_1.default.getEthrVerificationKey({
-                    seed: issuerPrivateKey,
-                    returnKey: true
-                });
-                suite = new ecdsa_secp256k1_signature_2019_1.EcdsaSecp256k1Signature2019({
-                    key: keyPairIssuer,
-                    date: issuanceDate
-                });
+            if (!verificationMethod) {
+                suite = new ed25519_signature_2018_1.Ed25519Signature2018({ key: verificationKey, date: issuanceDate });
+            }
+            else {
+                switch ((_t = verificationMethod[0]) === null || _t === void 0 ? void 0 : _t.type) {
+                    case 'Ed25519VerificationKey2018':
+                        suite = new ed25519_signature_2018_1.Ed25519Signature2018({
+                            key: verificationKey,
+                            date: issuanceDate
+                        });
+                        break;
+                    case 'EcdsaSecp256k1VerificationKey2019':
+                        suite = new ecdsa_secp256k1_signature_2019_1.EcdsaSecp256k1Signature2019({
+                            key: verificationKey,
+                            date: issuanceDate
+                        });
+                        break;
+                }
             }
         }
         /* create the verifiable credential */
@@ -133,13 +149,9 @@ const create = async ({
             suite,
             documentLoader
         });
-        return (
-            ((_d = result === null || result === void 0 ? void 0 : result.items) === null ||
-            _d === void 0
-                ? void 0
-                : _d[0]) || null
-        );
-    } catch (error) {
+        return ((_u = result === null || result === void 0 ? void 0 : result.items) === null || _u === void 0 ? void 0 : _u[0]) || null;
+    }
+    catch (error) {
         throw new Error(error || errors_1.default.UNKNOWN_ERROR);
     }
 };
@@ -154,27 +166,16 @@ const create = async ({
  *
  * @return {boolean} - result in boolean format.
  */
-const verify = async ({
-    suite = undefined,
-    vc,
-    documentLoader,
-    issuerPublicKey,
-    holderPublicKey,
-    type = 'key'
-}) => {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+const verify = async ({ suite = undefined, vc, documentLoader, issuerPublicKey, holderPublicKey, didMethod }) => {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t;
+    /* extract the did type */
+    if (!didMethod) {
+        didMethod = ((_b = (_a = functions_1.default.getKeyValue(vc, 'issuer')) === null || _a === void 0 ? void 0 : _a.split(':')) === null || _b === void 0 ? void 0 : _b[1]) || 'key';
+    }
     /* check essential data is present in vc */
     functions_1.default.checkVcMetaData(vc);
     /* do a mask proof if available */
-    if (
-        (_b =
-            (_a = vc === null || vc === void 0 ? void 0 : vc.credentialSubject) === null ||
-            _a === void 0
-                ? void 0
-                : _a.selectiveDisclosureMetaData) === null || _b === void 0
-            ? void 0
-            : _b.proof
-    ) {
+    if ((_d = (_c = vc === null || vc === void 0 ? void 0 : vc.credentialSubject) === null || _c === void 0 ? void 0 : _c.selectiveDisclosureMetaData) === null || _d === void 0 ? void 0 : _d.proof) {
         /* extract data from verifiable credential */
         let issuer = functions_1.default.getKeyValue(vc, 'issuer');
         let holder = functions_1.default.getKeyValue(vc.credentialSubject, 'holder');
@@ -182,92 +183,54 @@ const verify = async ({
         if (!issuerPublicKey && issuer) {
             /* load the document of the issuer with issuer DID */
             const documentLoaderResult = await documentLoader(issuer);
-            if (
-                (_c =
-                    documentLoaderResult === null || documentLoaderResult === void 0
-                        ? void 0
-                        : documentLoaderResult.document) === null || _c === void 0
-                    ? void 0
-                    : _c.verificationMethod
-            ) {
-                const verificationMethod =
-                    (_e =
-                        (_d =
-                            documentLoaderResult === null || documentLoaderResult === void 0
-                                ? void 0
-                                : documentLoaderResult.document) === null || _d === void 0
-                            ? void 0
-                            : _d.verificationMethod) === null || _e === void 0
-                        ? void 0
-                        : _e[0];
-                /* base58 to hex */
-                issuerPublicKey = buffer_1.Buffer.from(
-                    base_58_1.default.decode(
-                        verificationMethod === null || verificationMethod === void 0
-                            ? void 0
-                            : verificationMethod.publicKeyBase58
-                    )
-                ).toString('hex');
-            } else if (
-                issuer === null || issuer === void 0 ? void 0 : issuer.startsWith('did:ethr')
-            ) {
-                issuerPublicKey =
-                    issuer === null || issuer === void 0
-                        ? void 0
-                        : issuer.replace('did:ethr:0x', '');
+            if ((_e = documentLoaderResult === null || documentLoaderResult === void 0 ? void 0 : documentLoaderResult.document) === null || _e === void 0 ? void 0 : _e.verificationMethod) {
+                const verificationMethod = (_f = documentLoaderResult === null || documentLoaderResult === void 0 ? void 0 : documentLoaderResult.document) === null || _f === void 0 ? void 0 : _f.verificationMethod.filter((vm) => { var _a; return vm.id === ((_a = vc === null || vc === void 0 ? void 0 : vc.proof) === null || _a === void 0 ? void 0 : _a.verificationMethod); });
+                switch ((_g = verificationMethod[0]) === null || _g === void 0 ? void 0 : _g.type) {
+                    case 'Ed25519VerificationKey2018':
+                        issuerPublicKey = buffer_1.Buffer.from(base_58_1.default.decode((_h = verificationMethod[0]) === null || _h === void 0 ? void 0 : _h.publicKeyBase58)).toString('hex');
+                        suite = new ed25519_signature_2018_1.Ed25519Signature2018();
+                        break;
+                    case 'EcdsaSecp256k1VerificationKey2019':
+                        issuerPublicKey = (_j = verificationMethod[0]) === null || _j === void 0 ? void 0 : _j.publicKeyHex;
+                        suite = new ecdsa_secp256k1_signature_2019_1.EcdsaSecp256k1Signature2019();
+                        break;
+                }
+                if (!verificationMethod)
+                    throw new Error(errors_1.default.INVALID_VC_PROOF);
+            }
+            else if (issuer === null || issuer === void 0 ? void 0 : issuer.startsWith('did:ethr')) {
+                issuerPublicKey = issuer === null || issuer === void 0 ? void 0 : issuer.replace('did:ethr:0x', '');
             }
         }
         if (!holderPublicKey && holder) {
             /* load the document of the holder with holder DID */
             const documentLoaderResult = await documentLoader(holder);
-            if (
-                (_f =
-                    documentLoaderResult === null || documentLoaderResult === void 0
-                        ? void 0
-                        : documentLoaderResult.document) === null || _f === void 0
-                    ? void 0
-                    : _f.verificationMethod
-            ) {
-                const verificationMethod =
-                    (_h =
-                        (_g =
-                            documentLoaderResult === null || documentLoaderResult === void 0
-                                ? void 0
-                                : documentLoaderResult.document) === null || _g === void 0
-                            ? void 0
-                            : _g.verificationMethod) === null || _h === void 0
-                        ? void 0
-                        : _h[0];
-                /* base58 to hex */
-                holderPublicKey = buffer_1.Buffer.from(
-                    base_58_1.default.decode(
-                        verificationMethod === null || verificationMethod === void 0
-                            ? void 0
-                            : verificationMethod.publicKeyBase58
-                    )
-                ).toString('hex');
-            } else if (
-                holder === null || holder === void 0 ? void 0 : holder.startsWith('did:ethr')
-            ) {
-                holderPublicKey =
-                    holder === null || holder === void 0
-                        ? void 0
-                        : holder.replace('did:ethr:0x', '');
+            if ((_k = documentLoaderResult === null || documentLoaderResult === void 0 ? void 0 : documentLoaderResult.document) === null || _k === void 0 ? void 0 : _k.verificationMethod) {
+                const verificationMethod = (_l = documentLoaderResult === null || documentLoaderResult === void 0 ? void 0 : documentLoaderResult.document) === null || _l === void 0 ? void 0 : _l.verificationMethod.filter((vm) => vm.type === 'EcdsaSecp256k1VerificationKey2019' ||
+                    vm.type === 'Ed25519VerificationKey2018');
+                switch ((_m = verificationMethod[0]) === null || _m === void 0 ? void 0 : _m.type) {
+                    case 'Ed25519VerificationKey2018':
+                        holderPublicKey = buffer_1.Buffer.from(base_58_1.default.decode((_o = verificationMethod[0]) === null || _o === void 0 ? void 0 : _o.publicKeyBase58)).toString('hex');
+                        break;
+                    case 'EcdsaSecp256k1VerificationKey2019':
+                        holderPublicKey = (_p = verificationMethod[0]) === null || _p === void 0 ? void 0 : _p.publicKeyHex;
+                        break;
+                }
+                if (!verificationMethod)
+                    throw new Error(errors_1.default.INVALID_VC_PROOF);
+            }
+            else if (holder === null || holder === void 0 ? void 0 : holder.startsWith('did:ethr')) {
+                holderPublicKey = holder === null || holder === void 0 ? void 0 : holder.replace('did:ethr:0x', '');
             }
         }
-        if (!issuerPublicKey) throw new Error(errors_1.default.NO_ISSUER_PUBLIC_KEY);
-        if (!holderPublicKey) throw new Error(errors_1.default.NO_HOLDER_PUBLIC_KEY);
+        if (!issuerPublicKey)
+            throw new Error(errors_1.default.NO_ISSUER_PUBLIC_KEY);
+        if (!holderPublicKey)
+            throw new Error(errors_1.default.NO_HOLDER_PUBLIC_KEY);
         /* remove selectiveDisclosureMetaData */
         let credentialSubject = Object.assign({}, vc.credentialSubject);
         delete credentialSubject.selectiveDisclosureMetaData;
-        const mask =
-            ((_k =
-                (_j = vc === null || vc === void 0 ? void 0 : vc.credentialSubject) === null ||
-                _j === void 0
-                    ? void 0
-                    : _j.selectiveDisclosureMetaData) === null || _k === void 0
-                ? void 0
-                : _k.mask) || {};
+        const mask = ((_r = (_q = vc === null || vc === void 0 ? void 0 : vc.credentialSubject) === null || _q === void 0 ? void 0 : _q.selectiveDisclosureMetaData) === null || _r === void 0 ? void 0 : _r.mask) || {};
         /* create a masked credential subject */
         const { maskedClaims: fullMaskedClaims } = utils_1.default.mask.full({
             mask,
@@ -281,27 +244,24 @@ const verify = async ({
             credentialSubject: fullMaskedClaims
         };
         try {
-            const verified = utils_1.default.signature[type].verify({
+            const verified = utils_1.default.signature[didMethod].verify({
                 data: maskCredential,
-                signature:
-                    (_m =
-                        (_l = vc === null || vc === void 0 ? void 0 : vc.credentialSubject) ===
-                            null || _l === void 0
-                            ? void 0
-                            : _l.selectiveDisclosureMetaData) === null || _m === void 0
-                        ? void 0
-                        : _m.proof,
+                signature: (_t = (_s = vc === null || vc === void 0 ? void 0 : vc.credentialSubject) === null || _s === void 0 ? void 0 : _s.selectiveDisclosureMetaData) === null || _t === void 0 ? void 0 : _t.proof,
                 publicKey: issuerPublicKey
             });
             return { verified };
-        } catch (error) {
+        }
+        catch (error) {
             throw Error(error || errors_1.default.INVALID_VC_SELECTIVE_DISCLOSURE_PROOF);
         }
     }
-    if (type === 'key') {
-        suite = new ed25519_signature_2018_1.Ed25519Signature2018();
-    } else if (type === 'ethr') {
-        suite = new ecdsa_secp256k1_signature_2019_1.EcdsaSecp256k1Signature2019();
+    if (!suite) {
+        if (didMethod === 'key') {
+            suite = new ed25519_signature_2018_1.Ed25519Signature2018();
+        }
+        else if (didMethod === 'ethr') {
+            suite = new ecdsa_secp256k1_signature_2019_1.EcdsaSecp256k1Signature2019();
+        }
     }
     /* default credential verification */
     try {
@@ -311,7 +271,8 @@ const verify = async ({
             documentLoader,
             suite
         });
-    } catch (error) {
+    }
+    catch (error) {
         throw new Error(error || errors_1.default.INVALID_VC_PROOF);
     }
 };

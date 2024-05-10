@@ -19,6 +19,7 @@ export interface CreateProps {
     verifiableCredential: VerifiableCredential[];
     challenge?: string;
     domain?: string;
+    holderDID: string;
     suite?: Suite;
     issuanceDate?: string;
     masks?: Mask[];
