@@ -136,7 +136,7 @@ const fullMask = ({ mask = {}, credentialSubject = {}, holderPublicKey }) => {
             const maskValues = !(mask === null || mask === void 0 ? void 0 : mask[key]) || lodash_1.default.isObject(mask === null || mask === void 0 ? void 0 : mask[key]);
             if (maskValues) {
                 if (credentialSubject === null || credentialSubject === void 0 ? void 0 : credentialSubject[key]) {
-                    const maskedKey = key;
+                    const maskedKey = functions_1.default.blind(key, holderPublicKey);
                     try {
                         if (lodash_1.default.isObject(mask === null || mask === void 0 ? void 0 : mask[key]) && lodash_1.default.isObject(credentialSubject[key])) {
                             const result = fullMask({

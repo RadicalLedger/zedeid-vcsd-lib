@@ -55,8 +55,8 @@ const create = async ({ issuerPrivateKey, issuanceDate = new Date().toISOString(
             if (!holderPublicKey)
                 throw new Error(errors_1.default.NO_HOLDER_PUBLIC_KEY);
         }
-        else if (holder === null || holder === void 0 ? void 0 : holder.startsWith('did:ethr')) {
-            holderPublicKey = holder === null || holder === void 0 ? void 0 : holder.replace('did:ethr:0x', '');
+        else {
+            throw new Error(errors_1.default.NO_HOLDER_PUBLIC_KEY);
         }
         /* get issuer verification key using document loader */
         const issuerDocument = await documentLoader(credential === null || credential === void 0 ? void 0 : credential.issuer);
@@ -87,14 +87,6 @@ const create = async ({ issuerPrivateKey, issuanceDate = new Date().toISOString(
             if (!verificationKey)
                 throw new Error(errors_1.default.NO_VERIFICATION_METHOD);
         }
-        else if (didMethod == 'ethr') {
-            verificationKey = await edca_secp256k1_verification_2019_1.EcdsaSecp256k1VerificationKey2019.from({
-                controller: credential === null || credential === void 0 ? void 0 : credential.issuer,
-                id: credential === null || credential === void 0 ? void 0 : credential.issuer,
-                privateKeyHex: issuerPrivateKey,
-                publicKeyHex: credential === null || credential === void 0 ? void 0 : credential.issuer.split('did:ethr:0x')[1]
-            });
-        }
         else {
             throw new Error(errors_1.default.NO_ISSUER_DID);
         }
@@ -122,24 +114,19 @@ const create = async ({ issuerPrivateKey, issuanceDate = new Date().toISOString(
         };
         /* if a suite is not given use the default */
         if (!suite) {
-            if (!verificationMethod) {
-                suite = new ed25519_signature_2018_1.Ed25519Signature2018({ key: verificationKey, date: issuanceDate });
-            }
-            else {
-                switch ((_t = verificationMethod[0]) === null || _t === void 0 ? void 0 : _t.type) {
-                    case 'Ed25519VerificationKey2018':
-                        suite = new ed25519_signature_2018_1.Ed25519Signature2018({
-                            key: verificationKey,
-                            date: issuanceDate
-                        });
-                        break;
-                    case 'EcdsaSecp256k1VerificationKey2019':
-                        suite = new ecdsa_secp256k1_signature_2019_1.EcdsaSecp256k1Signature2019({
-                            key: verificationKey,
-                            date: issuanceDate
-                        });
-                        break;
-                }
+            switch ((_t = verificationMethod[0]) === null || _t === void 0 ? void 0 : _t.type) {
+                case 'Ed25519VerificationKey2018':
+                    suite = new ed25519_signature_2018_1.Ed25519Signature2018({
+                        key: verificationKey,
+                        date: issuanceDate
+                    });
+                    break;
+                case 'EcdsaSecp256k1VerificationKey2019':
+                    suite = new ecdsa_secp256k1_signature_2019_1.EcdsaSecp256k1Signature2019({
+                        key: verificationKey,
+                        date: issuanceDate
+                    });
+                    break;
             }
         }
         /* create the verifiable credential */
@@ -198,8 +185,8 @@ const verify = async ({ suite = undefined, vc, documentLoader, issuerPublicKey, 
                 if (!verificationMethod)
                     throw new Error(errors_1.default.INVALID_VC_PROOF);
             }
-            else if (issuer === null || issuer === void 0 ? void 0 : issuer.startsWith('did:ethr')) {
-                issuerPublicKey = issuer === null || issuer === void 0 ? void 0 : issuer.replace('did:ethr:0x', '');
+            else {
+                throw new Error(errors_1.default.NO_ISSUER_PUBLIC_KEY);
             }
         }
         if (!holderPublicKey && holder) {
@@ -219,8 +206,8 @@ const verify = async ({ suite = undefined, vc, documentLoader, issuerPublicKey, 
                 if (!verificationMethod)
                     throw new Error(errors_1.default.INVALID_VC_PROOF);
             }
-            else if (holder === null || holder === void 0 ? void 0 : holder.startsWith('did:ethr')) {
-                holderPublicKey = holder === null || holder === void 0 ? void 0 : holder.replace('did:ethr:0x', '');
+            else {
+                throw new Error(errors_1.default.NO_HOLDER_PUBLIC_KEY);
             }
         }
         if (!issuerPublicKey)
@@ -253,14 +240,6 @@ const verify = async ({ suite = undefined, vc, documentLoader, issuerPublicKey, 
         }
         catch (error) {
             throw Error(error || errors_1.default.INVALID_VC_SELECTIVE_DISCLOSURE_PROOF);
-        }
-    }
-    if (!suite) {
-        if (didMethod === 'key') {
-            suite = new ed25519_signature_2018_1.Ed25519Signature2018();
-        }
-        else if (didMethod === 'ethr') {
-            suite = new ecdsa_secp256k1_signature_2019_1.EcdsaSecp256k1Signature2019();
         }
     }
     /* default credential verification */

@@ -33,11 +33,11 @@ const create = async ({ suite, challenge = 'fcc8b78e-ecca-426a-a69f-8e7c927b845f
     if (!didMethod) {
         didMethod = ((_b = (_a = functions_1.default.getKeyValue(verifiableCredential, 'holder')) === null || _a === void 0 ? void 0 : _a.split(':')) === null || _b === void 0 ? void 0 : _b[1]) || 'key';
     }
-    if (didMethod == 'moon' && !holderDID) {
+    if ((didMethod == 'moon' || didMethod === 'ethr') && !holderDID) {
         throw new Error(errors_1.default.NO_HOLDER_DID);
     }
     let holderDoc;
-    if ((didMethod === 'key' || didMethod === 'ethr') && !holderDID) {
+    if (didMethod === 'key' && !holderDID) {
         holderDoc = await functions_1.default.privateKeyToDoc(holderPrivateKey, didMethod);
     }
     let verificationKey;
@@ -73,15 +73,6 @@ const create = async ({ suite, challenge = 'fcc8b78e-ecca-426a-a69f-8e7c927b845f
                 throw new Error(errors_1.default.NO_VERIFICATION_METHOD);
             }
         }
-        else if (didMethod === 'ethr') {
-            verificationKey = edca_secp256k1_verification_2019_1.EcdsaSecp256k1VerificationKey2019.from({
-                controller: holderDID,
-                id: `${holderDID}`,
-                publicKeyHex: holderPublicKey,
-                privateKeyHex: holderPrivateKey
-            });
-            holderPublicKey = holderDID.split(':')[2];
-        }
         else {
             throw new Error(errors_1.default.NO_HOLDER_PUBLIC_KEY);
         }
@@ -110,24 +101,19 @@ const create = async ({ suite, challenge = 'fcc8b78e-ecca-426a-a69f-8e7c927b845f
     })));
     /* if a suite is not given use the default */
     if (!suite) {
-        if (!verificationMethod) {
-            suite = new ed25519_signature_2018_1.Ed25519Signature2018({ key: verificationKey, date: issuanceDate });
-        }
-        else {
-            switch ((_q = verificationMethod[0]) === null || _q === void 0 ? void 0 : _q.type) {
-                case 'Ed25519VerificationKey2018':
-                    suite = new ed25519_signature_2018_1.Ed25519Signature2018({
-                        key: verificationKey,
-                        date: issuanceDate
-                    });
-                    break;
-                case 'EcdsaSecp256k1VerificationKey2019':
-                    suite = new ecdsa_secp256k1_signature_2019_1.EcdsaSecp256k1Signature2019({
-                        key: verificationKey,
-                        date: issuanceDate
-                    });
-                    break;
-            }
+        switch ((_q = verificationMethod[0]) === null || _q === void 0 ? void 0 : _q.type) {
+            case 'Ed25519VerificationKey2018':
+                suite = new ed25519_signature_2018_1.Ed25519Signature2018({
+                    key: verificationKey,
+                    date: issuanceDate
+                });
+                break;
+            case 'EcdsaSecp256k1VerificationKey2019':
+                suite = new ecdsa_secp256k1_signature_2019_1.EcdsaSecp256k1Signature2019({
+                    key: verificationKey,
+                    date: issuanceDate
+                });
+                break;
         }
     }
     const presentation = {
