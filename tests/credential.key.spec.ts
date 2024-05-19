@@ -1,4 +1,4 @@
-import { verifiable } from '../src';
+import { verifiable } from '../dist';
 import documentLoader from './assets/document-loader';
 
 // const issuer = 'did:key:z6Mkoqgh9AppS2s28onvE4Qy9jwDBJ8ZqRdBtoWLSsRL57Jj';

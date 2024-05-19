@@ -4,139 +4,57 @@ import functions from './functions';
 declare const VCSD: {
     verifiable: {
         credential: {
-            create: ({
-                issuerPrivateKey,
-                issuanceDate,
-                holderPublicKey,
-                documentLoader,
-                credential,
-                suite,
-                type
-            }: import('./types/credential.type').CreateProps) => Promise<
-                import('@transmute/vc.js/dist/types/VerifiableCredential').VerifiableCredential
-            >;
-            verify: ({
-                suite,
-                vc,
-                documentLoader,
-                issuerPublicKey,
-                holderPublicKey,
-                type
-            }: import('./types/credential.type').VerifyProps) => Promise<{
+            create: ({ issuerPrivateKey, issuanceDate, documentLoader, credential, suite, didMethod }: import("./types/credential.type").CreateProps) => Promise<import("@transmute/vc.js/dist/types/VerifiableCredential").VerifiableCredential>;
+            verify: ({ suite, vc, documentLoader, issuerPublicKey, holderPublicKey, didMethod }: import("./types/credential.type").VerifyProps) => Promise<{
                 verified: any;
             }>;
         };
         presentation: {
-            create: ({
-                suite,
-                challenge,
-                issuanceDate,
-                domain,
-                documentLoader,
-                holderPrivateKey,
-                verifiableCredential,
-                masks,
-                type
-            }: import('./types/presentation.type').CreateProps) => Promise<
-                import('@transmute/vc.js/dist/types/VerifiablePresentation').VerifiablePresentation
-            >;
-            verify: ({
-                suite,
-                challenge,
-                domain,
-                vp,
-                documentLoader,
-                issuerPublicKey,
-                holderPublicKey,
-                type
-            }: import('./types/presentation.type').VerifyProps) => Promise<
-                import('@transmute/vc.js/dist/types').VerificationResult
-            >;
+            create: ({ suite, challenge, issuanceDate, domain, documentLoader, holderPrivateKey, holderDID, verifiableCredential, masks, didMethod }: import("./types/presentation.type").CreateProps) => Promise<import("@transmute/vc.js/dist/types/VerifiablePresentation").VerifiablePresentation>;
+            verify: ({ suite, challenge, domain, vp, documentLoader, issuerPublicKey, holderPublicKey, didMethod }: import("./types/presentation.type").VerifyProps) => Promise<import("@transmute/vc.js/dist/types").VerificationResult>;
         };
     };
     utils: {
         mask: {
-            create: ({
-                mask,
-                credentialSubject,
-                holderPublicKey
-            }: import('./types/utils.type').MaskProps) => {
+            create: ({ mask, credentialSubject, holderPublicKey }: import("./types/utils.type").MaskProps) => {
                 maskedClaims: {};
                 maskedMasks: {};
             };
-            full: ({
-                mask,
-                credentialSubject,
-                holderPublicKey
-            }: import('./types/utils.type').MaskProps) => import('./types/utils.type').Claims;
+            full: ({ mask, credentialSubject, holderPublicKey }: import("./types/utils.type").MaskProps) => import("./types/utils.type").Claims;
         };
         signature: {
             key: {
-                generate: ({
-                    data,
-                    privateKey
-                }: import('./types/utils.type').GenerateSignatureProps) => string;
-                verify: ({
-                    data,
-                    signature,
-                    publicKey
-                }: import('./types/utils.type').VerifySignatureProps) => any;
+                generate: ({ data, privateKey }: import("./types/utils.type").GenerateSignatureProps) => string;
+                verify: ({ data, signature, publicKey }: import("./types/utils.type").VerifySignatureProps) => any;
             };
             ethr: {
-                generate: ({
-                    data,
-                    privateKey
-                }: import('./types/utils.type').GenerateSignatureProps) => string;
-                verify: ({
-                    data,
-                    signature,
-                    publicKey
-                }: import('./types/utils.type').VerifySignatureProps) => true;
+                generate: ({ data, privateKey }: import("./types/utils.type").GenerateSignatureProps) => string;
+                verify: ({ data, signature, publicKey }: import("./types/utils.type").VerifySignatureProps) => true;
+            };
+            moon: {
+                generate: ({ data, privateKey }: import("./types/utils.type").GenerateSignatureProps) => string;
+                verify: ({ data, signature, publicKey }: import("./types/utils.type").VerifySignatureProps) => true;
             };
         };
-        ed25519: typeof import('./utils/ed25519').default;
-        secp256k1: typeof import('secp256k1');
+        ed25519: typeof import("./utils/ed25519").default;
+        secp256k1: typeof import("secp256k1");
     };
     functions: {
         base64UrlEncode: (unencoded: string) => string;
         base64UrlDecode: (encoded: string) => string;
         blind: (data: string, key: string) => string;
         sortObject: (object: any) => {};
-        privateKeyToDoc: (
-            privateKey: string,
-            type?: 'key' | 'ethr'
-        ) => Promise<{
+        privateKeyToDoc: (privateKey: string, didMethod?: import("./types/utils.type").DIDMethods) => Promise<{
             privateKey: string;
             publicKey: string;
             DID: string;
         }>;
-        checkVcMetaData: (
-            vc: import('@transmute/vc.js/dist/types/VerifiableCredential').VerifiableCredential
-        ) => void;
-        checkVpMetaData: (
-            vp: import('@transmute/vc.js/dist/types/VerifiablePresentation').VerifiablePresentation
-        ) => void;
-        getKeyVerificationKey: ({
-            seed,
-            includePrivateKey,
-            returnKey
-        }: {
+        checkVcMetaData: (vc: import("@transmute/vc.js/dist/types/VerifiableCredential").VerifiableCredential) => void;
+        checkVpMetaData: (vp: import("@transmute/vc.js/dist/types/VerifiablePresentation").VerifiablePresentation) => void;
+        getVerificationKey: ({ seed, VerificationMethodId, didMethod }: {
             seed: string;
-            includePrivateKey?: boolean;
-            returnKey?: boolean;
-        }) => Promise<
-            | import('@transmute/ed25519-signature-2018').Ed25519VerificationKey2018
-            | import('@transmute/ed25519-key-pair').JsonWebKey2020
-            | import('@transmute/ed25519-key-pair').Ed25519VerificationKey2018
-        >;
-        getEthrVerificationKey: ({
-            seed,
-            includePrivateKey,
-            returnKey
-        }: {
-            seed: string;
-            includePrivateKey?: boolean;
-            returnKey?: boolean;
+            VerificationMethodId?: string;
+            didMethod: import("./types/utils.type").DIDMethods;
         }) => Promise<any>;
         getKeyValue: (obj: any, key: string) => any;
     };

@@ -1,7 +1,7 @@
-'use strict';
-Object.defineProperty(exports, '__esModule', { value: true });
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 // @ts-ignore
-const elliptic_1 = require('elliptic');
+const elliptic_1 = require("elliptic");
 class Ed25519 {
     constructor() {
         this.ed = new elliptic_1.eddsa('ed25519');

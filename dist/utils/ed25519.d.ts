@@ -20,9 +20,5 @@ export default class Ed25519 {
      *
      * @returns - boolean
      */
-    verify(
-        signature: Buffer | Uint8Array | string,
-        message: Buffer | Uint8Array,
-        publicKey: string
-    ): any;
+    verify(signature: Buffer | Uint8Array | string, message: Buffer | Uint8Array, publicKey: string): any;
 }
