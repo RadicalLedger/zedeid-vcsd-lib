@@ -146,12 +146,8 @@ const create = async ({ suite, challenge = 'fcc8b78e-ecca-426a-a69f-8e7c927b845f
  *
  * @return {boolean} - result in boolean format.
  */
-const verify = async ({ suite = undefined, challenge = 'fcc8b78e-ecca-426a-a69f-8e7c927b845f', domain, vp, documentLoader, issuerPublicKey, holderPublicKey, didMethod }) => {
-    var _a, _b;
+const verify = async ({ suite = undefined, challenge = 'fcc8b78e-ecca-426a-a69f-8e7c927b845f', domain, vp, documentLoader, issuerPublicKey, holderPublicKey }) => {
     /* extract the did type */
-    if (!didMethod) {
-        didMethod = ((_b = (_a = functions_1.default.getKeyValue(vp, 'holder')) === null || _a === void 0 ? void 0 : _a.split(':')) === null || _b === void 0 ? void 0 : _b[1]) || 'key';
-    }
     /* check essential data is present in vp */
     functions_1.default.checkVpMetaData(vp);
     /* extract data from verifiable presentation */
@@ -162,10 +158,9 @@ const verify = async ({ suite = undefined, challenge = 'fcc8b78e-ecca-426a-a69f-
             const result = await credential_1.default.verify({
                 vc,
                 documentLoader,
-                holderPublicKey,
                 issuerPublicKey,
-                suite,
-                didMethod
+                holderPublicKey,
+                suite
             });
             if (!(result === null || result === void 0 ? void 0 : result.verified))
                 throw Error(errors_1.default.INVALID_VC_PROOF);

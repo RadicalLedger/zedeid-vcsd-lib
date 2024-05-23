@@ -7,7 +7,7 @@ declare const _default: {
     };
     presentation: {
         create: ({ suite, challenge, issuanceDate, domain, documentLoader, holderPrivateKey, holderDID, verifiableCredential, masks, didMethod }: import("../types/presentation.type").CreateProps) => Promise<import("@transmute/vc.js/dist/types/VerifiablePresentation").VerifiablePresentation>;
-        verify: ({ suite, challenge, domain, vp, documentLoader, issuerPublicKey, holderPublicKey, didMethod }: import("../types/presentation.type").VerifyProps) => Promise<import("@transmute/vc.js/dist/types").VerificationResult>;
+        verify: ({ suite, challenge, domain, vp, documentLoader, issuerPublicKey, holderPublicKey }: import("../types/presentation.type").VerifyProps) => Promise<import("@transmute/vc.js/dist/types").VerificationResult>;
     };
 };
 export default _default;
