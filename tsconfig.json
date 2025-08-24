@@ -16,11 +16,22 @@
         "skipLibCheck": true,
         "sourceMap": true,
         "declaration": true,
+        "resolveJsonModule": true,
         "outDir": "dist",
         "baseUrl": ".",
-        "paths": {
-            "*": ["node_modules/*", "src/types/*"]
-        }
+        "typeRoots": [
+            "./node_modules/@types",
+            "./src/types"
+        ]
     },
-    "include": ["src/**/*"]
+    "include": [
+        "src/**/*",
+        "index.ts",
+        "public/**/*",
+        "backup"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
 }
