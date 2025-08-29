@@ -1,0 +1,44 @@
+import { DocumentLoader } from '@transmute/vc.js/dist/types/DocumentLoader';
+import { Claims, DIDMethods, Mask } from './utils';
+import { VerifiableCredential } from '@transmute/vc.js/dist/types/VerifiableCredential';
+import { Suite } from '@transmute/vc.js/dist/types/Suite';
+
+export interface Credential {
+    '@context': any[];
+    id: string;
+    issuanceDate: string;
+    type: string | string[];
+    issuer: string;
+    credentialSubject: any;
+    mask?: any;
+}
+
+export interface CreateProps {
+    issuanceDate?: string;
+    issuerPrivateKey: string;
+    holderPublicKey?: string;
+    documentLoader: DocumentLoader;
+    credential: Credential;
+    suite?: Suite;
+    didMethod?: DIDMethods;
+}
+
+export interface VerifyProps {
+    issuerPublicKey?: string;
+    holderPublicKey?: string;
+    documentLoader: DocumentLoader;
+    vc: VerifiableCredential;
+    suite?: Suite;
+    didMethod?: DIDMethods;
+}
+
+export interface MaskVerifyProps {
+    vc: VerifiableCredential;
+    holder: string;
+    issuer: string;
+    holderPublicKey: string;
+    issuerPublicKey?: string;
+    holderPublicKey?: string;
+    didMethod?: DIDMethods;
+    documentLoader: DocumentLoader;
+}
