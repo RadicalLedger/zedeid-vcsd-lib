@@ -36,17 +36,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.functions = exports.utils = exports.verifiable = void 0;
-const verifiable_1 = __importDefault(require("./verifiable"));
-exports.verifiable = verifiable_1.default;
-const utils_1 = __importDefault(require("./utils"));
-exports.utils = utils_1.default;
-const functions = __importStar(require("./functions"));
-exports.functions = functions;
-const VCSD = {
-    verifiable: verifiable_1.default,
-    utils: utils_1.default,
-    functions
-};
-exports.default = VCSD;
+const mask_1 = __importDefault(require("./mask"));
+const signature_1 = __importDefault(require("./signature"));
+const ed25519_1 = __importDefault(require("./ed25519"));
+const secp256k1 = __importStar(require("secp256k1"));
+exports.default = { mask: mask_1.default, signature: signature_1.default, ed25519: ed25519_1.default, secp256k1 };
 //# sourceMappingURL=index.js.map
