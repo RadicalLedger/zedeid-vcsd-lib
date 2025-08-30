@@ -60,7 +60,8 @@ var ERRORS = Object.freeze({
   INVALID_SIGNATURE: "Proof is invalid",
   UNKNOWN_ERROR: "Unknown error",
   FAILED_MASK_VERIFICATION: "Failed to verify masked verifiable credential",
-  NO_VERIFICATION_METHOD: "No verification method found"
+  NO_VERIFICATION_METHOD: "No verification method found",
+  FALLBACK_VERIFICATION: "Fallback verification"
 });
 var errors_default = ERRORS;
 
@@ -814,7 +815,7 @@ var verify2 = async ({
   holderPublicKey,
   didMethod
 }) => {
-  var _a, _b, _c, _d, _e, _f, _g;
+  var _a, _b, _c, _d, _e, _f, _g, _h;
   if (!didMethod) {
     didMethod = ((_b = (_a = getKeyValue(vp, "holder")) == null ? void 0 : _a.split(":")) == null ? void 0 : _b[1]) || "key";
   }
@@ -850,7 +851,8 @@ var verify2 = async ({
       challenge,
       domain
     });
-    return result == null ? void 0 : result.presentation;
+    if ((_h = result == null ? void 0 : result.presentation) == null ? void 0 : _h.verified) return result == null ? void 0 : result.presentation;
+    throw Error(errors_default.FALLBACK_VERIFICATION);
   } catch (error) {
     try {
       return await maskVerification2({
