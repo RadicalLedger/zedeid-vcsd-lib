@@ -825,23 +825,6 @@ var verify2 = async ({
     return Object.keys((_b2 = (_a2 = vc == null ? void 0 : vc.credentialSubject) == null ? void 0 : _a2.selectiveDisclosureMetaData) == null ? void 0 : _b2.mask).length > 0 && ((_d2 = (_c2 = vc == null ? void 0 : vc.credentialSubject) == null ? void 0 : _c2.selectiveDisclosureMetaData) == null ? void 0 : _d2.proof);
   }).length > 0;
   if (hasMaskedProof) {
-    for (const vc of verifiableCredential) {
-      try {
-        const result2 = await credential_default.verify({
-          vc,
-          documentLoader,
-          holderPublicKey,
-          issuerPublicKey,
-          suite,
-          didMethod
-        });
-        if (!(result2 == null ? void 0 : result2.verified)) throw Error(errors_default.INVALID_VC_PROOF);
-      } catch (e) {
-        throw Error(`At least one credential is not valid
-${e.message}`);
-      }
-    }
-    return { verified: true };
   }
   if (didMethod === "key") {
     suite = new Ed25519Signature20182();
@@ -858,15 +841,56 @@ ${e.message}`);
     });
     suite = new EcdsaSecp256k1Signature20192({ key });
   }
-  const result = await verifiable2.presentation.verify({
-    presentation: vp,
-    format: ["vp"],
-    documentLoader,
-    suite,
-    challenge,
-    domain
-  });
-  return result == null ? void 0 : result.presentation;
+  try {
+    const result = await verifiable2.presentation.verify({
+      presentation: vp,
+      format: ["vp"],
+      documentLoader,
+      suite,
+      challenge,
+      domain
+    });
+    return result == null ? void 0 : result.presentation;
+  } catch (error) {
+    try {
+      return await maskVerification2({
+        verifiableCredential,
+        holderPublicKey,
+        issuerPublicKey,
+        suite,
+        didMethod,
+        documentLoader
+      });
+    } catch (error2) {
+      throw Error(errors_default.INVALID_VC_PROOF);
+    }
+  }
+};
+var maskVerification2 = async ({
+  verifiableCredential,
+  documentLoader,
+  holderPublicKey,
+  issuerPublicKey,
+  suite,
+  didMethod
+}) => {
+  for (const vc of verifiableCredential) {
+    try {
+      const result = await credential_default.verify({
+        vc,
+        documentLoader,
+        holderPublicKey,
+        issuerPublicKey,
+        suite,
+        didMethod
+      });
+      if (!(result == null ? void 0 : result.verified)) throw Error(errors_default.INVALID_VC_PROOF);
+    } catch (e) {
+      throw Error(`At least one credential is not valid
+${e.message}`);
+    }
+  }
+  return { verified: true };
 };
 var presentation_default = { create: create2, verify: verify2 };
 

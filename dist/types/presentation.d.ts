@@ -35,3 +35,12 @@ export interface VerifyProps {
     suite?: Suite;
     didMethod?: DIDMethods;
 }
+
+export interface VPMaskVerifyProps {
+    verifiableCredential: VerifiableCredential[];
+    holderPublicKey: string;
+    issuerPublicKey?: string;
+    suite?: Suite;
+    didMethod?: DIDMethods;
+    documentLoader: DocumentLoader;
+}

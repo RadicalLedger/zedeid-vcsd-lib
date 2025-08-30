@@ -36,7 +36,6 @@ export interface MaskVerifyProps {
     vc: VerifiableCredential;
     holder: string;
     issuer: string;
-    holderPublicKey: string;
     issuerPublicKey?: string;
     holderPublicKey?: string;
     didMethod?: DIDMethods;
