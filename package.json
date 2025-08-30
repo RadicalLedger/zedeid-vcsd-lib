@@ -1,12 +1,12 @@
 {
     "name": "sd-vc-lib",
-    "version": "4.0.2",
+    "version": "4.0.3",
     "description": "Issue, present and verify selectively disclosure credentials",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "type": "commonjs",
     "scripts": {
-        "build": "rimraf dist && tsup",
+        "build": "rimraf dist && tsup && npx cpx 'src/types/*' dist/types",
         "test": "jest",
         "coverage": "jest --coverage",
         "lint": "eslint . --ext .ts",
@@ -51,14 +51,13 @@
         "@types/secp256k1": "^4.0.1",
         "@types/sha.js": "^2.4.0",
         "axios": "^0.21.1",
-        "bs58": "^6.0.0",
+        "base-58": "^0.0.1",
         "buffer": "^6.0.3",
         "elliptic": "^6.5.4",
         "hash.js": "^1.1.7",
         "keccak256": "^1.0.6",
         "lodash": "^4.17.21",
-        "sha.js": "^2.4.11",
-        "sha2.js": "link:@noble/hashes/sha2.js"
+        "sha.js": "^2.4.11"
     },
     "files": [
         "dist",

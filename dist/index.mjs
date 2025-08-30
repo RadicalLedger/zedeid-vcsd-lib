@@ -27,7 +27,7 @@ import {
   Ed25519VerificationKey2018 as Ed25519VerificationKey20182
 } from "@transmute/ed25519-signature-2018";
 import { verifiable } from "@transmute/vc.js";
-import { default as base582 } from "bs58";
+import * as base582 from "base-58";
 import { Buffer as Buffer4 } from "buffer";
 import _3 from "lodash";
 
@@ -81,7 +81,7 @@ __export(functions_exports, {
 import * as hashUtils from "hash.js";
 import { Ed25519VerificationKey2018 } from "@transmute/ed25519-signature-2018";
 import * as secp256k1 from "secp256k1";
-import { default as base58 } from "bs58";
+import * as base58 from "base-58";
 import { Buffer as Buffer2 } from "buffer";
 import _ from "lodash";
 import { EcdsaSecp256k1VerificationKey2019 } from "@bloomprotocol/ecdsa-secp256k1-verification-key-2019";

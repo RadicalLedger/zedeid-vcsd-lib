@@ -55,7 +55,7 @@ var import_ecdsa_secp256k1_signature_2019 = require("@bloomprotocol/ecdsa-secp25
 var import_ecdsa_secp256k1_verification_key_20192 = require("@bloomprotocol/ecdsa-secp256k1-verification-key-2019");
 var import_ed25519_signature_20182 = require("@transmute/ed25519-signature-2018");
 var import_vc = require("@transmute/vc.js");
-var import_bs582 = __toESM(require("bs58"));
+var base582 = __toESM(require("base-58"));
 var import_buffer3 = require("buffer");
 var import_lodash3 = __toESM(require("lodash"));
 
@@ -109,7 +109,7 @@ __export(functions_exports, {
 var hashUtils = __toESM(require("hash.js"));
 var import_ed25519_signature_2018 = require("@transmute/ed25519-signature-2018");
 var secp256k1 = __toESM(require("secp256k1"));
-var import_bs58 = __toESM(require("bs58"));
+var base58 = __toESM(require("base-58"));
 var import_buffer = require("buffer");
 var import_lodash = __toESM(require("lodash"));
 var import_ecdsa_secp256k1_verification_key_2019 = require("@bloomprotocol/ecdsa-secp256k1-verification-key-2019");
@@ -173,7 +173,7 @@ var privateKeyToDoc = async (privateKey, didMethod = "key") => {
     const verificationKeyExport = await verificationKey.export({
       type: "Ed25519VerificationKey2018"
     });
-    publicKey = import_buffer.Buffer.from(import_bs58.default.decode(verificationKeyExport.publicKeyBase58)).toString(
+    publicKey = import_buffer.Buffer.from(base58.decode(verificationKeyExport.publicKeyBase58)).toString(
       "hex"
     );
     did = verificationKey.id.split("#")[0];
@@ -253,7 +253,7 @@ var getKeyValue = (obj, key) => {
 var getFullPrivateKeyBs58 = (privateKey, publicKey) => {
   const seed = import_buffer.Buffer.from(privateKey, "hex");
   const fullIssuerPrivateKey = import_buffer.Buffer.concat([seed, import_buffer.Buffer.from(publicKey, "hex")]);
-  const privateKeyBase58 = import_bs58.default.encode(fullIssuerPrivateKey);
+  const privateKeyBase58 = base58.encode(fullIssuerPrivateKey);
   return privateKeyBase58;
 };
 
@@ -519,7 +519,7 @@ var create = async ({
       switch ((_e = verificationMethod[0]) == null ? void 0 : _e.type) {
         case "Ed25519VerificationKey2018":
           holderPublicKey = import_buffer3.Buffer.from(
-            import_bs582.default.decode((_f = verificationMethod[0]) == null ? void 0 : _f.publicKeyBase58)
+            base582.decode((_f = verificationMethod[0]) == null ? void 0 : _f.publicKeyBase58)
           ).toString("hex");
           break;
         case "EcdsaSecp256k1VerificationKey2019":
@@ -539,7 +539,7 @@ var create = async ({
       switch ((_j = verificationMethod[0]) == null ? void 0 : _j.type) {
         case "Ed25519VerificationKey2018":
           let issuerPublicKey = import_buffer3.Buffer.from(
-            import_bs582.default.decode((_k = verificationMethod[0]) == null ? void 0 : _k.publicKeyBase58)
+            base582.decode((_k = verificationMethod[0]) == null ? void 0 : _k.publicKeyBase58)
           ).toString("hex");
           const issuerPrivateKeyBase58 = getFullPrivateKeyBs58(
             issuerPrivateKey,
@@ -633,7 +633,7 @@ var verify = async ({
         case "Ed25519VerificationKey2018":
           if (!issuerPublicKey)
             issuerPublicKey = import_buffer3.Buffer.from(
-              import_bs582.default.decode((_f = verificationMethod[0]) == null ? void 0 : _f.publicKeyBase58)
+              base582.decode((_f = verificationMethod[0]) == null ? void 0 : _f.publicKeyBase58)
             ).toString("hex");
           suite = new import_ed25519_signature_20182.Ed25519Signature2018();
           break;
@@ -711,7 +711,7 @@ var maskVerification = async ({
       switch ((_c = verificationMethod[0]) == null ? void 0 : _c.type) {
         case "Ed25519VerificationKey2018":
           holderPublicKey = import_buffer3.Buffer.from(
-            import_bs582.default.decode((_d = verificationMethod[0]) == null ? void 0 : _d.publicKeyBase58)
+            base582.decode((_d = verificationMethod[0]) == null ? void 0 : _d.publicKeyBase58)
           ).toString("hex");
           break;
         case "EcdsaSecp256k1VerificationKey2019":
