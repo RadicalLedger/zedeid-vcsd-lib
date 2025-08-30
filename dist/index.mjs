@@ -27,7 +27,7 @@ import {
   Ed25519VerificationKey2018 as Ed25519VerificationKey20182
 } from "@transmute/ed25519-signature-2018";
 import { verifiable } from "@transmute/vc.js";
-import Base58 from "bs58";
+import { default as base582 } from "bs58";
 import { Buffer as Buffer4 } from "buffer";
 import _3 from "lodash";
 
@@ -81,7 +81,7 @@ __export(functions_exports, {
 import * as hashUtils from "hash.js";
 import { Ed25519VerificationKey2018 } from "@transmute/ed25519-signature-2018";
 import * as secp256k1 from "secp256k1";
-import base58 from "bs58";
+import { default as base58 } from "bs58";
 import { Buffer as Buffer2 } from "buffer";
 import _ from "lodash";
 import { EcdsaSecp256k1VerificationKey2019 } from "@bloomprotocol/ecdsa-secp256k1-verification-key-2019";
@@ -491,7 +491,7 @@ var create = async ({
       switch ((_e = verificationMethod[0]) == null ? void 0 : _e.type) {
         case "Ed25519VerificationKey2018":
           holderPublicKey = Buffer4.from(
-            Base58.decode((_f = verificationMethod[0]) == null ? void 0 : _f.publicKeyBase58)
+            base582.decode((_f = verificationMethod[0]) == null ? void 0 : _f.publicKeyBase58)
           ).toString("hex");
           break;
         case "EcdsaSecp256k1VerificationKey2019":
@@ -511,7 +511,7 @@ var create = async ({
       switch ((_j = verificationMethod[0]) == null ? void 0 : _j.type) {
         case "Ed25519VerificationKey2018":
           let issuerPublicKey = Buffer4.from(
-            Base58.decode((_k = verificationMethod[0]) == null ? void 0 : _k.publicKeyBase58)
+            base582.decode((_k = verificationMethod[0]) == null ? void 0 : _k.publicKeyBase58)
           ).toString("hex");
           const issuerPrivateKeyBase58 = getFullPrivateKeyBs58(
             issuerPrivateKey,
@@ -605,7 +605,7 @@ var verify = async ({
         case "Ed25519VerificationKey2018":
           if (!issuerPublicKey)
             issuerPublicKey = Buffer4.from(
-              Base58.decode((_f = verificationMethod[0]) == null ? void 0 : _f.publicKeyBase58)
+              base582.decode((_f = verificationMethod[0]) == null ? void 0 : _f.publicKeyBase58)
             ).toString("hex");
           suite = new Ed25519Signature2018();
           break;
@@ -683,7 +683,7 @@ var maskVerification = async ({
       switch ((_c = verificationMethod[0]) == null ? void 0 : _c.type) {
         case "Ed25519VerificationKey2018":
           holderPublicKey = Buffer4.from(
-            Base58.decode((_d = verificationMethod[0]) == null ? void 0 : _d.publicKeyBase58)
+            base582.decode((_d = verificationMethod[0]) == null ? void 0 : _d.publicKeyBase58)
           ).toString("hex");
           break;
         case "EcdsaSecp256k1VerificationKey2019":
