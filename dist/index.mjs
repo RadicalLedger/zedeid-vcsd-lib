@@ -826,6 +826,18 @@ var verify2 = async ({
     return Object.keys((_b2 = (_a2 = vc == null ? void 0 : vc.credentialSubject) == null ? void 0 : _a2.selectiveDisclosureMetaData) == null ? void 0 : _b2.mask).length > 0 && ((_d2 = (_c2 = vc == null ? void 0 : vc.credentialSubject) == null ? void 0 : _c2.selectiveDisclosureMetaData) == null ? void 0 : _d2.proof);
   }).length > 0;
   if (hasMaskedProof) {
+    try {
+      return await maskVerification2({
+        verifiableCredential,
+        holderPublicKey,
+        issuerPublicKey,
+        suite,
+        didMethod,
+        documentLoader
+      });
+    } catch (error) {
+      throw Error(error);
+    }
   }
   if (didMethod === "key") {
     suite = new Ed25519Signature20182();
